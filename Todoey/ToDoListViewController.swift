@@ -12,16 +12,21 @@ class ToDoListViewController: UITableViewController {
     
     var itemArray = ["Eat Proteins", "Eat Carbs", "Eat Fats"]
     
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if let items = UserDefaults.standard.array(forKey: "ToDoListArray") as? [String] {
+            itemArray = items
+        }
+
     }
     
+    //MARK - TableView Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "ToDoItemCell")
@@ -53,7 +58,9 @@ class ToDoListViewController: UITableViewController {
             //User taps the Add button on UIAlert
             self.itemArray.append(textField.text!)
             
-            self.tableView.reloadData() 
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+            
+            self.tableView.reloadData()
         }
         
         alert.addTextField { (alertTextField) in
@@ -61,10 +68,8 @@ class ToDoListViewController: UITableViewController {
             
             textField = alertTextField
         }
-        
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
     }
 }
-
